@@ -41416,7 +41416,75 @@ var XRControllerModelFactory = /*#__PURE__*/function () {
   return XRControllerModelFactory;
 }();
 exports.XRControllerModelFactory = XRControllerModelFactory;
-},{"three":"../node_modules/three/build/three.module.js","../loaders/GLTFLoader.js":"../node_modules/three/examples/jsm/loaders/GLTFLoader.js","../libs/motion-controllers.module.js":"../node_modules/three/examples/jsm/libs/motion-controllers.module.js"}],"utils/index.js":[function(require,module,exports) {
+},{"three":"../node_modules/three/build/three.module.js","../loaders/GLTFLoader.js":"../node_modules/three/examples/jsm/loaders/GLTFLoader.js","../libs/motion-controllers.module.js":"../node_modules/three/examples/jsm/libs/motion-controllers.module.js"}],"../node_modules/three/examples/jsm/geometries/BoxLineGeometry.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.BoxLineGeometry = void 0;
+var _three = require("three");
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+var BoxLineGeometry = /*#__PURE__*/function (_BufferGeometry) {
+  _inherits(BoxLineGeometry, _BufferGeometry);
+  var _super = _createSuper(BoxLineGeometry);
+  function BoxLineGeometry(width = 1, height = 1, depth = 1, widthSegments = 1, heightSegments = 1, depthSegments = 1) {
+    var _this;
+    _classCallCheck(this, BoxLineGeometry);
+    _this = _super.call(this);
+    widthSegments = Math.floor(widthSegments);
+    heightSegments = Math.floor(heightSegments);
+    depthSegments = Math.floor(depthSegments);
+    var widthHalf = width / 2;
+    var heightHalf = height / 2;
+    var depthHalf = depth / 2;
+    var segmentWidth = width / widthSegments;
+    var segmentHeight = height / heightSegments;
+    var segmentDepth = depth / depthSegments;
+    var vertices = [];
+    var x = -widthHalf;
+    var y = -heightHalf;
+    var z = -depthHalf;
+    for (var i = 0; i <= widthSegments; i++) {
+      vertices.push(x, -heightHalf, -depthHalf, x, heightHalf, -depthHalf);
+      vertices.push(x, heightHalf, -depthHalf, x, heightHalf, depthHalf);
+      vertices.push(x, heightHalf, depthHalf, x, -heightHalf, depthHalf);
+      vertices.push(x, -heightHalf, depthHalf, x, -heightHalf, -depthHalf);
+      x += segmentWidth;
+    }
+    for (var _i = 0; _i <= heightSegments; _i++) {
+      vertices.push(-widthHalf, y, -depthHalf, widthHalf, y, -depthHalf);
+      vertices.push(widthHalf, y, -depthHalf, widthHalf, y, depthHalf);
+      vertices.push(widthHalf, y, depthHalf, -widthHalf, y, depthHalf);
+      vertices.push(-widthHalf, y, depthHalf, -widthHalf, y, -depthHalf);
+      y += segmentHeight;
+    }
+    for (var _i2 = 0; _i2 <= depthSegments; _i2++) {
+      vertices.push(-widthHalf, -heightHalf, z, -widthHalf, heightHalf, z);
+      vertices.push(-widthHalf, heightHalf, z, widthHalf, heightHalf, z);
+      vertices.push(widthHalf, heightHalf, z, widthHalf, -heightHalf, z);
+      vertices.push(widthHalf, -heightHalf, z, -widthHalf, -heightHalf, z);
+      z += segmentDepth;
+    }
+    _this.setAttribute('position', new _three.Float32BufferAttribute(vertices, 3));
+    return _this;
+  }
+  return _createClass(BoxLineGeometry);
+}(_three.BufferGeometry);
+exports.BoxLineGeometry = BoxLineGeometry;
+},{"three":"../node_modules/three/build/three.module.js"}],"utils/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41482,58 +41550,154 @@ function buildController(data) {
       return new THREE.Mesh(geometry, material);
   }
 }
-},{"three":"../node_modules/three/build/three.module.js"}],"main/01-webxr.js":[function(require,module,exports) {
+},{"three":"../node_modules/three/build/three.module.js"}],"main/02-webxr_vr_ballshooter.js":[function(require,module,exports) {
 "use strict";
 
 var THREE = _interopRequireWildcard(require("three"));
 var _VRButton = require("three/examples/jsm/webxr/VRButton");
 var _XRControllerModelFactory = require("three/examples/jsm/webxr/XRControllerModelFactory");
+var _BoxLineGeometry = require("three/examples/jsm/geometries/BoxLineGeometry");
 var _index = require("../utils/index");
 var handControls = _interopRequireWildcard(require("../utils/handControls"));
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 /** @format */
 
+var count = 0;
+var radius = 0.08;
+var normal = new THREE.Vector3();
+var relativeVelocity = new THREE.Vector3();
+var clock = new THREE.Clock();
 // 创建场景
 var scene = new THREE.Scene();
-scene.background = new THREE.Color(0xffffff);
+scene.background = new THREE.Color(0x505050);
 // 创建相机
 var camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 100);
 camera.position.set(0, 0, 10);
 scene.add(camera);
 // 添加坐标轴辅助器
-var axesHelper = new THREE.AxesHelper(10);
-scene.add(axesHelper);
-var sphere = new THREE.SphereGeometry(1, 20, 20);
-var material = new THREE.MeshBasicMaterial({
-  color: 0xffff00,
-  wireframe: true
-});
-var mesh = new THREE.Mesh(sphere, material);
-scene.add(mesh);
+// const axesHelper = new THREE.AxesHelper(10);
+// scene.add(axesHelper);
+
+// 添加房间
+var room = new THREE.LineSegments(new _BoxLineGeometry.BoxLineGeometry(6, 6, 6, 10, 10, 10), new THREE.LineBasicMaterial({
+  color: 0x808080
+}));
+room.geometry.translate(0, 3, 0);
+scene.add(room);
+// 添加灯光
+var hemisphereLight = new THREE.HemisphereLight(0x606060, 0x404040);
+scene.add(hemisphereLight);
+var directionalLight = new THREE.DirectionalLight(0xffffff);
+scene.add(directionalLight);
+
+// 添加缓存几何体
+var geometry = new THREE.IcosahedronGeometry(0.08);
+var mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({
+  color: Math.random() * 0xffffff
+}));
+// 添加200个
+for (var index = 0; index < 10; index++) {
+  var obj = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({
+    color: Math.random() * 0xffffff
+  }));
+  obj.position.x = Math.random() * 4 - 2;
+  obj.position.y = Math.random() * 4;
+  obj.position.z = Math.random() * 4 - 2;
+  obj.userData.velocity = new THREE.Vector3();
+  obj.userData.velocity.x = Math.random() * 0.01 - 0.005;
+  obj.userData.velocity.y = Math.random() * 0.01 - 0.005;
+  obj.userData.velocity.z = Math.random() * 0.01 - 0.005;
+  room.add(obj);
+}
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.outputEncoding = THREE.sRGBEncoding;
 document.body.appendChild(renderer.domElement);
 document.body.appendChild(_VRButton.VRButton.createButton(renderer));
 renderer.xr.enabled = true;
 
 // 手柄控制器
-var control1 = renderer.xr.getController(0);
-control1.addEventListener("selectstart", handControls.onSelectstart);
-control1.addEventListener("selectend", handControls.onSelectEnd);
-control1.addEventListener("connected", handControls.onConnected);
-control1.addEventListener("disconnected", handControls.onDisconnected);
-scene.add(control1);
+var controller1 = renderer.xr.getController(0);
+controller1.addEventListener("selectstart", handControls.onSelectstart);
+controller1.addEventListener("selectend", handControls.onSelectEnd);
+controller1.addEventListener("connected", handControls.onConnected);
+controller1.addEventListener("disconnected", handControls.onDisconnected);
+scene.add(controller1);
 // 控制器模型
 var controllerModelFactory = new _XRControllerModelFactory.XRControllerModelFactory();
 var controllerGrip1 = renderer.xr.getControllerGrip(0);
 controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
 scene.add(controllerGrip1);
-renderer.setAnimationLoop(function () {
+console.log(room.children);
+renderer.setAnimationLoop(render);
+function render() {
+  handleController(controller1);
+  //
+
+  var delta = clock.getDelta() * 0.8; // 运行时间
+
+  var range = 3 - radius;
+  for (var i = 0; i < room.children.length; i++) {
+    var object = room.children[i];
+    object.position.x += object.userData.velocity.x * delta;
+    object.position.y += object.userData.velocity.y * delta;
+    object.position.z += object.userData.velocity.z * delta;
+
+    // keep objects inside room
+
+    if (object.position.x < -range || object.position.x > range) {
+      object.position.x = THREE.MathUtils.clamp(object.position.x, -range, range);
+      object.userData.velocity.x = -object.userData.velocity.x;
+    }
+    if (object.position.y < radius || object.position.y > 6) {
+      object.position.y = Math.max(object.position.y, radius);
+      object.userData.velocity.x *= 0.98;
+      object.userData.velocity.y = -object.userData.velocity.y * 0.8;
+      object.userData.velocity.z *= 0.98;
+    }
+    if (object.position.z < -range || object.position.z > range) {
+      object.position.z = THREE.MathUtils.clamp(object.position.z, -range, range);
+      object.userData.velocity.z = -object.userData.velocity.z;
+    }
+
+    // for (let j = i + 1; j < room.children.length; j++) {
+    //   const object2 = room.children[j];
+
+    //   normal.copy(object.position).sub(object2.position);
+
+    //   const distance = normal.length();
+
+    //   if (distance < 2 * radius) {
+    //     normal.multiplyScalar(0.5 * distance - radius);
+    //     object.position.sub(normal);
+    //     object2.position.add(normal);
+    //     normal.normalize();
+    //     relativeVelocity.copy(object.userData.velocity).sub(object2.userData.velocity);
+    //     normal = normal.multiplyScalar(relativeVelocity.dot(normal));
+    //     object.userData.velocity.sub(normal);
+    //     object2.userData.velocity.add(normal);
+    //   }
+    // }
+    // object.userData.velocity.y -= 9.8 * delta;
+  }
+
   renderer.render(scene, camera);
-});
+}
+function handleController(controller) {
+  if (controller.userData.isSelecting) {
+    var object = room.children[count++];
+    object.position.copy(controller.position);
+    object.userData.velocity.x = (Math.random() - 0.5) * 3;
+    object.userData.velocity.y = (Math.random() - 0.5) * 3;
+    object.userData.velocity.z = Math.random() - 9;
+    object.userData.velocity.applyQuaternion(controller.quaternion);
+    if (count === room.children.length) count = 0;
+  }
+}
 window.addEventListener("resize", (0, _index.onWindowResize)(camera, renderer));
-},{"three":"../node_modules/three/build/three.module.js","three/examples/jsm/webxr/VRButton":"../node_modules/three/examples/jsm/webxr/VRButton.js","three/examples/jsm/webxr/XRControllerModelFactory":"../node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js","../utils/index":"utils/index.js","../utils/handControls":"utils/handControls.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"three":"../node_modules/three/build/three.module.js","three/examples/jsm/webxr/VRButton":"../node_modules/three/examples/jsm/webxr/VRButton.js","three/examples/jsm/webxr/XRControllerModelFactory":"../node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js","three/examples/jsm/geometries/BoxLineGeometry":"../node_modules/three/examples/jsm/geometries/BoxLineGeometry.js","../utils/index":"utils/index.js","../utils/handControls":"utils/handControls.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -41702,5 +41866,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","main/01-webxr.js"], null)
-//# sourceMappingURL=/01-webxr.26e5c49a.js.map
+},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","main/02-webxr_vr_ballshooter.js"], null)
+//# sourceMappingURL=/02-webxr_vr_ballshooter.86419527.js.map

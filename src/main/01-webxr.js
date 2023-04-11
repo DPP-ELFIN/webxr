@@ -7,7 +7,7 @@ import { onWindowResize } from "../utils/index";
 import * as handControls from "../utils/handControls";
 // 创建场景
 const scene = new THREE.Scene();
-
+scene.background = new THREE.Color(0xffffff);
 // 创建相机
 const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 100);
 camera.position.set(0, 0, 10);
