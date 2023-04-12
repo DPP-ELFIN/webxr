@@ -7,7 +7,7 @@ import { onWindowResize } from "../utils/index";
 import * as handControls from "../utils/handControls";
 // 创建场景
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xffffff);
+scene.background = new THREE.Color(0x505050);
 // 创建相机
 const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 100);
 camera.position.set(0, 0, 10);
@@ -23,6 +23,8 @@ scene.add(mesh);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.outputEncoding = THREE.sRGBEncoding;
 document.body.appendChild(renderer.domElement);
 document.body.appendChild(VRButton.createButton(renderer));
 renderer.xr.enabled = true;

@@ -41550,7 +41550,7 @@ function buildController(data) {
       return new THREE.Mesh(geometry, material);
   }
 }
-},{"three":"../node_modules/three/build/three.module.js"}],"main/02-webxr_vr_ballshooter.js":[function(require,module,exports) {
+},{"three":"../node_modules/three/build/three.module.js"}],"main/03-webxr_vr_cube_jh.js":[function(require,module,exports) {
 "use strict";
 
 var THREE = _interopRequireWildcard(require("three"));
@@ -41563,11 +41563,8 @@ function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "functio
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 /** @format */
 
-var count = 0;
-var radius = 0.08;
-var normal = new THREE.Vector3();
-var relativeVelocity = new THREE.Vector3();
 var clock = new THREE.Clock();
+var tempMatrix = new THREE.Matrix4();
 // 创建场景
 var scene = new THREE.Scene();
 scene.background = new THREE.Color(0x505050);
@@ -41576,39 +41573,37 @@ var camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 100)
 camera.position.set(0, 0, 10);
 scene.add(camera);
 // 添加坐标轴辅助器
-// const axesHelper = new THREE.AxesHelper(10);
-// scene.add(axesHelper);
+var axesHelper = new THREE.AxesHelper(10);
+scene.add(axesHelper);
 
-// 添加房间
-var room = new THREE.LineSegments(new _BoxLineGeometry.BoxLineGeometry(6, 6, 6, 10, 10, 10), new THREE.LineBasicMaterial({
+// 灯光
+var hemisphereLight = new THREE.HemisphereLight(0x606060, 0x404040);
+var light = new THREE.DirectionalLight(0xffffff);
+light.position.set(1, 1, 1).normalize();
+scene.add(light);
+scene.add(hemisphereLight);
+scene.add(light);
+
+// room
+var room = new THREE.LineSegments(new _BoxLineGeometry.BoxLineGeometry(6, 6, 6, 10, 10, 10).translate(0, 3, 0), new THREE.LineBasicMaterial({
   color: 0x808080
 }));
-room.geometry.translate(0, 3, 0);
 scene.add(room);
-// 添加灯光
-var hemisphereLight = new THREE.HemisphereLight(0x606060, 0x404040);
-scene.add(hemisphereLight);
-var directionalLight = new THREE.DirectionalLight(0xffffff);
-scene.add(directionalLight);
 
-// 添加缓存几何体
-var geometry = new THREE.IcosahedronGeometry(0.08);
-var mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({
-  color: Math.random() * 0xffffff
-}));
-// 添加200个
-for (var index = 0; index < 10; index++) {
-  var obj = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({
+// cube
+var geometry = new THREE.BoxGeometry(0.15, 0.15, 0.15);
+for (var index = 0; index < 200; index++) {
+  var mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({
     color: Math.random() * 0xffffff
   }));
-  obj.position.x = Math.random() * 4 - 2;
-  obj.position.y = Math.random() * 4;
-  obj.position.z = Math.random() * 4 - 2;
-  obj.userData.velocity = new THREE.Vector3();
-  obj.userData.velocity.x = Math.random() * 0.01 - 0.005;
-  obj.userData.velocity.y = Math.random() * 0.01 - 0.005;
-  obj.userData.velocity.z = Math.random() * 0.01 - 0.005;
-  room.add(obj);
+  mesh.position.set(Math.random() * 4 - 2, Math.random() * 4, Math.random() * 4 - 2);
+  mesh.rotation.set(Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI);
+  mesh.scale.set(Math.random() + 0.5, Math.random() + 0.5, Math.random() + 0.5);
+  mesh.userData.velocity = new THREE.Vector3();
+  mesh.userData.velocity.x = Math.random() * 0.01 - 0.005;
+  mesh.userData.velocity.y = Math.random() * 0.01 - 0.005;
+  mesh.userData.velocity.z = Math.random() * 0.01 - 0.005;
+  room.add(mesh);
 }
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(innerWidth, innerHeight);
@@ -41619,82 +41614,73 @@ document.body.appendChild(_VRButton.VRButton.createButton(renderer));
 renderer.xr.enabled = true;
 
 // 手柄控制器
-var controller1 = renderer.xr.getController(0);
-controller1.addEventListener("selectstart", handControls.onSelectstart);
-controller1.addEventListener("selectend", handControls.onSelectEnd);
-controller1.addEventListener("connected", handControls.onConnected);
-controller1.addEventListener("disconnected", handControls.onDisconnected);
-scene.add(controller1);
+var control1 = renderer.xr.getController(0);
+control1.addEventListener("selectstart", handControls.onSelectstart);
+control1.addEventListener("selectend", handControls.onSelectEnd);
+control1.addEventListener("connected", handControls.onConnected);
+control1.addEventListener("disconnected", handControls.onDisconnected);
+scene.add(control1);
 // 控制器模型
 var controllerModelFactory = new _XRControllerModelFactory.XRControllerModelFactory();
 var controllerGrip1 = renderer.xr.getControllerGrip(0);
 controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
 scene.add(controllerGrip1);
-console.log(room.children);
+
+// 镭射交互
+var raycaster = new THREE.Raycaster();
 renderer.setAnimationLoop(render);
+console.log(room.children[0]);
+var INTERSECTED;
 function render() {
-  handleController(controller1);
-  //
-
-  var delta = clock.getDelta() * 0.8; // 运行时间
-
-  var range = 3 - radius;
+  var delta = clock.getDelta() * 60;
+  console.log(delta);
+  if (control1.userData.isSelecting === true) {
+    var cube = room.children[0];
+    // room.remove(cube);
+    cube.position.copy(control1.position);
+    cube.userData.velocity.x = (Math.random() - 0.5) * 0.02 * delta;
+    cube.userData.velocity.y = (Math.random() - 0.5) * 0.02 * delta;
+    cube.userData.velocity.z = (Math.random() * 0.01 - 0.05) * delta;
+    cube.userData.velocity.applyQuaternion(control1.quaternion);
+    room.add(cube);
+  }
+  //   设置镭射交互的位置与方向
+  tempMatrix.identity().extractRotation(control1.matrixWorld);
+  raycaster.ray.origin.setFromMatrixPosition(control1.matrixWorld);
+  raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
+  var res = raycaster.intersectObjects(room.children, false);
+  if (res.length > 0) {
+    if (INTERSECTED != res[0].object) {
+      if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
+      INTERSECTED = res[0].object;
+      INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
+      INTERSECTED.material.emissive.setHex(0xff0000);
+    }
+  } else {
+    if (INTERSECTED) INTERSECTED.material.emissive.setHex(INTERSECTED.currentHex);
+    INTERSECTED = undefined;
+  }
   for (var i = 0; i < room.children.length; i++) {
-    var object = room.children[i];
-    object.position.x += object.userData.velocity.x * delta;
-    object.position.y += object.userData.velocity.y * delta;
-    object.position.z += object.userData.velocity.z * delta;
-
-    // keep objects inside room
-
-    if (object.position.x < -range || object.position.x > range) {
-      object.position.x = THREE.MathUtils.clamp(object.position.x, -range, range);
-      object.userData.velocity.x = -object.userData.velocity.x;
+    var _cube = room.children[i];
+    _cube.userData.velocity.multiplyScalar(1 - 0.001 * delta);
+    _cube.position.add(_cube.userData.velocity);
+    if (_cube.position.x < -3 || _cube.position.x > 3) {
+      _cube.position.x = THREE.MathUtils.clamp(_cube.position.x, -3, 3);
+      _cube.userData.velocity.x = -_cube.userData.velocity.x;
     }
-    if (object.position.y < radius || object.position.y > 6) {
-      object.position.y = Math.max(object.position.y, radius);
-      object.userData.velocity.x *= 0.98;
-      object.userData.velocity.y = -object.userData.velocity.y * 0.8;
-      object.userData.velocity.z *= 0.98;
+    if (_cube.position.y < 0 || _cube.position.y > 6) {
+      _cube.position.y = THREE.MathUtils.clamp(_cube.position.y, 0, 6);
+      _cube.userData.velocity.y = -_cube.userData.velocity.y;
     }
-    if (object.position.z < -range || object.position.z > range) {
-      object.position.z = THREE.MathUtils.clamp(object.position.z, -range, range);
-      object.userData.velocity.z = -object.userData.velocity.z;
+    if (_cube.position.z < -3 || _cube.position.z > 3) {
+      _cube.position.z = THREE.MathUtils.clamp(_cube.position.z, -3, 3);
+      _cube.userData.velocity.z = -_cube.userData.velocity.z;
     }
-
-    // for (let j = i + 1; j < room.children.length; j++) {
-    //   const object2 = room.children[j];
-
-    //   normal.copy(object.position).sub(object2.position);
-
-    //   const distance = normal.length();
-
-    //   if (distance < 2 * radius) {
-    //     normal.multiplyScalar(0.5 * distance - radius);
-    //     object.position.sub(normal);
-    //     object2.position.add(normal);
-    //     normal.normalize();
-    //     relativeVelocity.copy(object.userData.velocity).sub(object2.userData.velocity);
-    //     normal = normal.multiplyScalar(relativeVelocity.dot(normal));
-    //     object.userData.velocity.sub(normal);
-    //     object2.userData.velocity.add(normal);
-    //   }
-    // }
-    // object.userData.velocity.y -= 9.8 * delta;
+    _cube.rotation.x += _cube.userData.velocity.x * 2 * delta;
+    _cube.rotation.y += _cube.userData.velocity.y * 2 * delta;
+    _cube.rotation.z += _cube.userData.velocity.z * 2 * delta;
   }
-
   renderer.render(scene, camera);
-}
-function handleController(controller) {
-  if (controller.userData.isSelecting) {
-    var object = room.children[count++];
-    object.position.copy(controller.position);
-    object.userData.velocity.x = (Math.random() - 0.5) * 3;
-    object.userData.velocity.y = (Math.random() - 0.5) * 3;
-    object.userData.velocity.z = Math.random() - 9;
-    object.userData.velocity.applyQuaternion(controller.quaternion);
-    if (count === room.children.length) count = 0;
-  }
 }
 window.addEventListener("resize", (0, _index.onWindowResize)(camera, renderer));
 },{"three":"../node_modules/three/build/three.module.js","three/examples/jsm/webxr/VRButton":"../node_modules/three/examples/jsm/webxr/VRButton.js","three/examples/jsm/webxr/XRControllerModelFactory":"../node_modules/three/examples/jsm/webxr/XRControllerModelFactory.js","three/examples/jsm/geometries/BoxLineGeometry":"../node_modules/three/examples/jsm/geometries/BoxLineGeometry.js","../utils/index":"utils/index.js","../utils/handControls":"utils/handControls.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
@@ -41866,5 +41852,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","main/02-webxr_vr_ballshooter.js"], null)
-//# sourceMappingURL=/02-webxr_vr_ballshooter.86419527.js.map
+},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","main/03-webxr_vr_cube_jh.js"], null)
+//# sourceMappingURL=/03-webxr_vr_cube_jh.94fdc554.js.map
