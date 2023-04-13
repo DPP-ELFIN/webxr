@@ -5,4 +5,5 @@ export function onWindowResize(camera, renderer) {
   camera.updateProjectionMatrix();
 
   renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(devicePixelRatio);
 }
